@@ -130,7 +130,7 @@ int main(int argc, char **argv) {
   char username[BUFF_SIZE];
   char password[BUFF_SIZE];
 
-  puts(argv[1]);
+  //puts(argv[1]);
   if (sscanf(argv[1], "ftp://%[^:]:%[^@]@%[^/]/%[^\n]", username, password, server_addr, file_path) < 4) {
     if (sscanf(argv[1], "ftp://%99[^/]/%99[^\n]", server_addr, file_path) < 2) {
       puts("Invalid url.");
@@ -142,17 +142,17 @@ int main(int argc, char **argv) {
 
   struct hostent *host;
 
-  puts("Fetching host ip.");
+  //puts("Fetching host ip.");
   if ((host = gethostbyname(server_addr)) == NULL) {
     perror("gethostbyname");
     exit(1);
   }
 
   char *server_ip = inet_ntoa(*((struct in_addr *)host->h_addr));
-  puts("Fetched.");
-  printf("%s\n", server_ip);
+  //puts("Fetched.");
+  //printf("%s\n", server_ip);
 
-  puts("Connecting.");
+  //puts("Connecting.");
   int sockfd = openSocket(server_ip, FTP_PORT);
   FILE* sockFile = fdopen(sockfd, "r");
 
@@ -165,10 +165,10 @@ int main(int argc, char **argv) {
       header = 0;
     }
   };
-  puts("Connected");
+  //puts("Connected");
 
   // user anonymous 331
-  puts("Login.");
+  //puts("Login.");
   char userStr[strlen(USER_STR) + strlen(username) + 1];
   sprintf(userStr, "%s%s\n", USER_STR, username);
   int res = sendMessage(sockfd, userStr, strlen(userStr));
@@ -185,7 +185,7 @@ int main(int argc, char **argv) {
   }
 
   // pass pass 230
-	puts("Sending password");
+  //puts("Sending password");
   char passStr[strlen(PASS_STR) + strlen(password) + 1];
   sprintf(passStr, "%s%s\n", PASS_STR, password);
   res = sendMessage(sockfd, passStr, strlen(passStr));
@@ -204,7 +204,7 @@ int main(int argc, char **argv) {
   // pasv
   // 227 Entering Passive Mode (193,137,29,15,217,159).
   // 41
-  puts("Setting up tranfer.");
+  //puts("Setting up tranfer.");
   res = sendMessage(sockfd, PASV, strlen(PASV));
   if (res < 0) {
     end(sockfd);
@@ -237,7 +237,7 @@ int main(int argc, char **argv) {
   // retr
   char file_request[6 + strlen(file_path)];
   sprintf(file_request, "retr %s\n", file_path);
-  printf("Retrieving: %s\n\n", file_path);
+  //printf("Retrieving: %s\n\n", file_path);
   res = sendMessage(sockfd, file_request, strlen(file_request));
   if (res < 0) {
     end(sockfd);
@@ -258,7 +258,7 @@ int main(int argc, char **argv) {
 
   pthread_join(thread, NULL);
 
-  puts("\nEnding");
+  //puts("\nEnding");
 
   end(sockfd);
 }
